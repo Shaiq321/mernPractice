@@ -1,37 +1,22 @@
 const dotenv =require('dotenv')
-const mongoose= require('mongoose')
+const { Router } = require('express')
 const express = require('express')
 const app= express()
+var cookieParser = require('cookie-parser')
+app.use(cookieParser())
 dotenv.config({path: './config.env'})
-const DB= process.env.DATABASE
-mongoose.connect(DB).then(()=>{
-    console.log('connected');
-}).catch((err)=>{console.log('failed: ' + err);})
-const middleware = (req,res,next) =>{
-console.log('running'); 
-next();
-}
+const PORT= process.env.PORT
+require('./DB/conn.js')
+app.use(express.json())
+const User=require('./Model/userSchema.js')
+app.use(require('./Controller/auth'))
+app.use(require('./Controller/Home/GetGrpData'))
 
-app.get('/',(req,res)=>{
-    ``
- res.send('home')
-})
-app.get('/about',middleware,(req,res)=>{
-    res.send('about')
-   })
-   app.get('/contact',(req,res)=>{
-    res.send('contact')
-   })
-   app.get('/login',(req,res)=>{
-    res.send('login')
-   })
-   app.get('/register',(req,res)=>{
-    res.send('register')
-   })
 
-app.listen(3000, ()=>{
-    console.log('server running')
+app.listen(PORT, ()=>{
+    console.log(`server running at PORT = ${PORT}`)
 }
 )
+
 /* C:\Program Files\MongoDB\Server\6.0\data\
 C:\Program Files\MongoDB\Server\6.0\log\ */
